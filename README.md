@@ -4,33 +4,19 @@
 
 ## 使用方式
 
-1. 用 `tools/convert.py` 把书转成 Markdown（见下方）
-2. 将转换后的 `.md` 文件上传给 Claude
-3. Claude 逐章提供摘要和核心思想
-4. 基于 Claude 的总结提出问题，展开对话
-5. 将思考和笔记记录在对应书籍的文件夹中
-
-## 格式转换工具
-
-支持 PDF / EPUB / MOBI / AZW3，统一转为 Markdown 后上传 Claude。
-
-**第一次使用：**
+**第一次（只做一次）：**
 ```bash
-bash tools/setup.sh
+bash tools/install.sh
 ```
 
-**转换单本书：**
-```bash
-python3 tools/convert.py book.epub
-python3 tools/convert.py book.pdf -o ./tech/my-book/
-```
+**之后每次读书：**
+1. 把书（PDF / EPUB / MOBI / AZW3）拖入这个文件夹
+2. 自动转换，出现在 `_inbox/`
+3. 打开 Claude，说「读 _inbox 里的书」
 
-**批量转换整个文件夹：**
-```bash
-python3 tools/convert.py ~/Downloads/books/ -o ./converted/
-```
+就这三步，没有其他操作。
 
-> MOBI / AZW3 需要安装 Calibre（`setup.sh` 会询问是否安装）。
+---
 
 ## 书籍分类
 
