@@ -4,8 +4,8 @@
 
 | 书名 | 分类 | 读到 | 最后阅读 |
 |------|------|------|---------|
-| [《为什么》](./science/the-book-of-why/notes.md) | science | 导言 | 2026-03-07 |
-| [《思考，快与慢》](./psychology/thinking-fast-and-slow/notes.md) | psychology | 序言 | 2026-03-08 |
+| [《为什么》](./science/the-book-of-why/notes.md) | science | 第三章 | 2026-03-08 |
+| [《思考，快与慢》](./psychology/thinking-fast-and-slow/notes.md) | psychology | 第2章 | 2026-03-08 |
 
 ## 待读（inbox）
 
