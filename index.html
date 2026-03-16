@@ -1,0 +1,313 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Books & Thoughts</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      background: #f5f4f0;
+      color: #1a1a1a;
+      min-height: 100vh;
+    }
+
+    header {
+      padding: 40px 48px 24px;
+      border-bottom: 1px solid #e0ddd8;
+      background: #fff;
+    }
+
+    header h1 {
+      font-size: 22px;
+      font-weight: 700;
+      letter-spacing: -0.3px;
+    }
+
+    header p {
+      margin-top: 6px;
+      font-size: 14px;
+      color: #888;
+    }
+
+    .board {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 0;
+      min-height: calc(100vh - 100px);
+    }
+
+    .column {
+      padding: 28px 24px;
+      border-right: 1px solid #e0ddd8;
+    }
+
+    .column:last-child { border-right: none; }
+
+    .column-header {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 20px;
+    }
+
+    .column-title {
+      font-size: 13px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.8px;
+      color: #555;
+    }
+
+    .column-count {
+      background: #e8e6e1;
+      color: #666;
+      font-size: 12px;
+      font-weight: 600;
+      padding: 2px 8px;
+      border-radius: 20px;
+    }
+
+    .column-reading .column-count { background: #dbeafe; color: #1d4ed8; }
+    .column-done .column-count { background: #dcfce7; color: #166534; }
+
+    .books {
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+
+    .book-card {
+      background: #fff;
+      border-radius: 10px;
+      overflow: hidden;
+      display: flex;
+      gap: 14px;
+      padding: 14px;
+      border: 1px solid #eae8e3;
+      transition: box-shadow 0.15s, transform 0.15s;
+      cursor: default;
+    }
+
+    .book-card:hover {
+      box-shadow: 0 4px 16px rgba(0,0,0,0.08);
+      transform: translateY(-1px);
+    }
+
+    .cover-wrap {
+      flex-shrink: 0;
+      width: 64px;
+      height: 88px;
+      border-radius: 4px;
+      overflow: hidden;
+      background: #f0ede8;
+    }
+
+    .cover-wrap img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+    }
+
+    .cover-placeholder {
+      width: 100%;
+      height: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 10px;
+      font-weight: 600;
+      color: #fff;
+      text-align: center;
+      padding: 6px;
+      line-height: 1.3;
+      word-break: break-all;
+    }
+
+    .book-info {
+      flex: 1;
+      min-width: 0;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+    }
+
+    .book-title {
+      font-size: 14px;
+      font-weight: 600;
+      line-height: 1.4;
+      color: #1a1a1a;
+    }
+
+    .book-author {
+      font-size: 12px;
+      color: #888;
+      margin-top: 4px;
+    }
+
+    .book-meta {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      margin-top: 10px;
+      flex-wrap: wrap;
+    }
+
+    .tag {
+      font-size: 11px;
+      padding: 2px 8px;
+      border-radius: 4px;
+      font-weight: 500;
+      background: #f0ede8;
+      color: #666;
+    }
+
+    .progress {
+      font-size: 11px;
+      color: #1d4ed8;
+      font-weight: 500;
+    }
+
+    .done-badge {
+      font-size: 11px;
+      color: #166534;
+      font-weight: 500;
+    }
+
+    .finish-date {
+      font-size: 11px;
+      color: #aaa;
+    }
+
+    @media (max-width: 768px) {
+      header { padding: 24px 20px 16px; }
+      .board { grid-template-columns: 1fr; }
+      .column { border-right: none; border-bottom: 1px solid #e0ddd8; }
+    }
+  </style>
+</head>
+<body>
+
+<header>
+  <h1>📚 Books & Thoughts</h1>
+  <p>和 Claude 一起读书，记录思考与对话</p>
+</header>
+
+<div class="board">
+
+  <!-- 待读 -->
+  <div class="column column-todo">
+    <div class="column-header">
+      <span class="column-title">待读</span>
+      <span class="column-count" id="count-todo"></span>
+    </div>
+    <div class="books" id="books-todo"></div>
+  </div>
+
+  <!-- 在读中 -->
+  <div class="column column-reading">
+    <div class="column-header">
+      <span class="column-title">在读中</span>
+      <span class="column-count" id="count-reading"></span>
+    </div>
+    <div class="books" id="books-reading"></div>
+  </div>
+
+  <!-- 已读完 -->
+  <div class="column column-done">
+    <div class="column-header">
+      <span class="column-title">已读完</span>
+      <span class="column-count" id="count-done"></span>
+    </div>
+    <div class="books" id="books-done"></div>
+  </div>
+
+</div>
+
+<script>
+  const COLORS = [
+    '#4f7cac','#c17767','#7c9e6e','#9b7cb6',
+    '#c49a3c','#6aabb8','#b06a8a','#7a8fa6'
+  ];
+
+  function colorFor(title) {
+    let h = 0;
+    for (let c of title) h = (h * 31 + c.charCodeAt(0)) & 0xffffffff;
+    return COLORS[Math.abs(h) % COLORS.length];
+  }
+
+  const books = {
+    todo: [
+      { title: '认知觉醒', author: '周岭', category: 'self-improvement', isbn: null },
+      { title: '时间盒', author: '马克·曹-桑德斯', category: 'self-improvement', isbn: null },
+      { title: '置身事内：中国政府与经济发展', author: '兰小欢', category: 'business', isbn: null },
+      { title: '最重要的事，只有一件', author: '凯勒 & 帕帕森', category: 'self-improvement', isbn: '9787213063671' },
+    ],
+    reading: [
+      { title: '思考，快与慢', author: '丹尼尔·卡尼曼', category: 'psychology', isbn: '9780374533557', progress: '第 5 章' },
+      { title: '麦肯锡结构化战略思维', author: '周国元', category: 'business', isbn: null, progress: '未开始' },
+    ],
+    done: [
+      { title: "Don't Make Me Think", author: 'Steve Krug', category: 'tech', isbn: '9780321965516', finishedAt: '2026-03-16', notes: 'tech/dont-make-me-think/notes.md' },
+      { title: '为什么', author: '朱迪亚·珀尔', category: 'science', isbn: '9780465097609', finishedAt: '2026-03-14', notes: 'science/the-book-of-why/notes.md' },
+    ],
+  };
+
+  function coverUrl(isbn) {
+    if (!isbn) return null;
+    return `https://covers.openlibrary.org/b/isbn/${isbn}-M.jpg`;
+  }
+
+  function renderCover(book) {
+    const url = coverUrl(book.isbn);
+    if (url) {
+      return `<img src="${url}" alt="${book.title}" onerror="this.parentNode.innerHTML=fallback('${book.title}')">`;
+    }
+    return `<div class="cover-placeholder" style="background:${colorFor(book.title)}">${book.title}</div>`;
+  }
+
+  function fallback(title) {
+    const color = colorFor(title);
+    return `<div class="cover-placeholder" style="background:${color}">${title}</div>`;
+  }
+
+  function categoryLabel(c) {
+    const map = { tech:'技术', business:'商业', psychology:'心理', science:'科学', 'self-improvement':'自我提升', philosophy:'哲学', history:'历史', fiction:'小说' };
+    return map[c] || c;
+  }
+
+  function renderCard(book, status) {
+    const meta = status === 'reading'
+      ? `<span class="progress">📖 ${book.progress}</span>`
+      : status === 'done'
+      ? `<span class="done-badge">✓ 读完</span><span class="finish-date">${book.finishedAt}</span>`
+      : '';
+
+    return `
+      <div class="book-card">
+        <div class="cover-wrap">${renderCover(book)}</div>
+        <div class="book-info">
+          <div>
+            <div class="book-title">${book.title}</div>
+            <div class="book-author">${book.author}</div>
+          </div>
+          <div class="book-meta">
+            <span class="tag">${categoryLabel(book.category)}</span>
+            ${meta}
+          </div>
+        </div>
+      </div>`;
+  }
+
+  ['todo', 'reading', 'done'].forEach(status => {
+    const list = books[status];
+    document.getElementById(`books-${status}`).innerHTML = list.map(b => renderCard(b, status)).join('');
+    document.getElementById(`count-${status}`).textContent = list.length;
+  });
+</script>
+
+</body>
+</html>
