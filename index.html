@@ -593,20 +593,30 @@
     btn.disabled = true;
     btn.textContent = '⏳ 生成中…';
 
-    const allBooks = [
-      ...books.reading.map(b => ({ ...b, status: 'reading' })),
-      ...books.done.map(b => ({ ...b, status: 'done' })),
-    ];
+    const readingBooks = books.reading.map(b => ({ ...b, status: 'reading' }));
+    const doneBooks = [...books.done].sort((a,b) => b.finishedAt.localeCompare(a.finishedAt)).map(b => ({ ...b, status: 'done' }));
 
-    const COLS = 4;
-    const CARD_W = 160, CARD_H = 220;
-    const COVER_W = 100, COVER_H = 140;
-    const PAD = 24, GAP = 16;
-    const HEADER_H = 100;
+    // 布局参数
+    const PAD = 28, GAP = 12, SECTION_GAP = 20;
+    const CARD_W = 140, CARD_H = 210, COVER_W = 88, COVER_H = 124;
+    const HEADER_H = 120;
+    const SECTION_TITLE_H = 36;
 
-    const rows = Math.ceil(allBooks.length / COLS);
-    const W = PAD * 2 + COLS * CARD_W + (COLS - 1) * GAP;
-    const H = HEADER_H + PAD + rows * CARD_H + (rows - 1) * GAP + PAD;
+    // 左栏：正在读，右栏：已读完
+    const LEFT_COLS = Math.min(readingBooks.length, 2) || 1;
+    const RIGHT_COLS = 4;
+    const COL_DIV = 16; // 中间分隔
+
+    const LEFT_W = PAD + LEFT_COLS * CARD_W + (LEFT_COLS - 1) * GAP + PAD / 2;
+    const RIGHT_W = PAD / 2 + RIGHT_COLS * CARD_W + (RIGHT_COLS - 1) * GAP + PAD;
+    const W = LEFT_W + COL_DIV + RIGHT_W;
+
+    const leftRows = Math.ceil(readingBooks.length / LEFT_COLS);
+    const rightRows = Math.ceil(doneBooks.length / RIGHT_COLS);
+    const leftH = SECTION_TITLE_H + leftRows * CARD_H + (leftRows - 1) * GAP;
+    const rightH = SECTION_TITLE_H + rightRows * CARD_H + (rightRows - 1) * GAP;
+    const contentH = Math.max(leftH, rightH);
+    const H = HEADER_H + PAD + contentH + PAD;
 
     const canvas = document.createElement('canvas');
     canvas.width = W * 2; canvas.height = H * 2;
@@ -617,24 +627,43 @@
     ctx.fillStyle = '#f4f4f5';
     ctx.fillRect(0, 0, W, H);
 
-    // header
+    // header bg
     ctx.fillStyle = '#ffffff';
     ctx.fillRect(0, 0, W, HEADER_H);
     ctx.strokeStyle = '#e4e4e7';
     ctx.lineWidth = 1;
     ctx.beginPath(); ctx.moveTo(0, HEADER_H); ctx.lineTo(W, HEADER_H); ctx.stroke();
 
+    // 大标题
     ctx.fillStyle = '#18181b';
-    ctx.font = 'bold 22px Inter, sans-serif';
-    ctx.fillText('📚 Books & Thoughts', PAD, 36);
+    ctx.font = 'bold 26px Inter, sans-serif';
+    ctx.fillText('📚 Books & Thoughts', PAD, 40);
 
+    // 醒目总数
+    const totalRead = books.done.length;
+    const totalReading = books.reading.length;
+    // 已读大数字
+    ctx.fillStyle = '#18181b';
+    ctx.font = 'bold 40px Inter, sans-serif';
+    ctx.fillText(totalRead, PAD, 90);
+    ctx.font = '14px Inter, sans-serif';
     ctx.fillStyle = '#71717a';
-    ctx.font = '13px Inter, sans-serif';
-    ctx.fillText(`已读 ${books.done.length} 本 · 在读 ${books.reading.length} 本`, PAD, 58);
+    ctx.fillText('本已读完', PAD + 44, 90);
 
+    // 在读
+    ctx.fillStyle = '#18181b';
+    ctx.font = 'bold 40px Inter, sans-serif';
+    ctx.fillText(totalReading, PAD + 140, 90);
+    ctx.font = '14px Inter, sans-serif';
+    ctx.fillStyle = '#71717a';
+    ctx.fillText('本正在读', PAD + 184, 90);
+
+    // 网站
     ctx.fillStyle = '#a1a1aa';
     ctx.font = '11px Inter, sans-serif';
-    ctx.fillText('allinai.asia/books', PAD, 80);
+    ctx.textAlign = 'right';
+    ctx.fillText('allinai.asia/books', W - PAD, 90);
+    ctx.textAlign = 'left';
 
     // load cover images
     async function loadImg(url) {
@@ -670,12 +699,39 @@
       ctx.closePath();
     }
 
-    for (let i = 0; i < allBooks.length; i++) {
-      const book = allBooks[i];
-      const col = i % COLS;
-      const row = Math.floor(i / COLS);
+    // 绘制分区标签
+    function drawSectionLabel(x, y, text, color) {
+      ctx.fillStyle = color;
+      ctx.font = 'bold 12px Inter, sans-serif';
+      ctx.fillText(text, x, y + 14);
+      ctx.strokeStyle = color;
+      ctx.lineWidth = 2;
+      ctx.beginPath();
+      ctx.moveTo(x, y + 22);
+      ctx.lineTo(x + ctx.measureText(text).width, y + 22);
+      ctx.stroke();
+    }
+
+    drawSectionLabel(PAD, HEADER_H + PAD, '● 正在读', '#3b82f6');
+    drawSectionLabel(LEFT_W + COL_DIV, HEADER_H + PAD, '✓ 已读完', '#71717a');
+
+    // 中间分隔线
+    ctx.strokeStyle = '#e4e4e7';
+    ctx.lineWidth = 1;
+    ctx.setLineDash([4, 4]);
+    ctx.beginPath();
+    ctx.moveTo(LEFT_W + COL_DIV / 2, HEADER_H + PAD);
+    ctx.lineTo(LEFT_W + COL_DIV / 2, H - PAD);
+    ctx.stroke();
+    ctx.setLineDash([]);
+
+    // 绘制左栏（在读）
+    for (let i = 0; i < readingBooks.length; i++) {
+      const book = readingBooks[i];
+      const col = i % LEFT_COLS;
+      const row = Math.floor(i / LEFT_COLS);
       const x = PAD + col * (CARD_W + GAP);
-      const y = HEADER_H + PAD + row * (CARD_H + GAP);
+      const y = HEADER_H + PAD + SECTION_TITLE_H + row * (CARD_H + GAP);
 
       // card bg
       ctx.fillStyle = '#ffffff';
@@ -754,6 +810,79 @@
       ctx.fillText(title, x + CARD_W / 2, y + COVER_H + 48);
 
       ctx.textAlign = 'left';
+    }
+
+    // 绘制右栏（已读）
+    async function drawCard(book, x, y) {
+      ctx.fillStyle = '#ffffff';
+      roundRect(ctx, x, y, CARD_W, CARD_H, 8);
+      ctx.fill();
+      ctx.strokeStyle = '#e4e4e7';
+      ctx.lineWidth = 1;
+      roundRect(ctx, x, y, CARD_W, CARD_H, 8);
+      ctx.stroke();
+
+      const coverX = x + (CARD_W - COVER_W) / 2;
+      const coverY = y + 12;
+      let drawn = false;
+      const bookCoverUrl = COVERS[book.title];
+      if (bookCoverUrl) {
+        const img = await loadImg(bookCoverUrl);
+        if (img && img.naturalWidth > 10) {
+          ctx.save();
+          roundRect(ctx, coverX, coverY, COVER_W, COVER_H, 4);
+          ctx.clip();
+          ctx.drawImage(img, coverX, coverY, COVER_W, COVER_H);
+          ctx.restore();
+          drawn = true;
+        }
+      }
+      if (!drawn) {
+        ctx.fillStyle = colorFor(book.title);
+        roundRect(ctx, coverX, coverY, COVER_W, COVER_H, 4);
+        ctx.fill();
+        ctx.fillStyle = 'rgba(255,255,255,0.9)';
+        ctx.font = 'bold 10px Inter, sans-serif';
+        ctx.textAlign = 'center';
+        const words = book.title.split('');
+        let line = '', lines = [];
+        for (let ch of words) {
+          if (ctx.measureText(line + ch).width > COVER_W - 10) { lines.push(line); line = ch; }
+          else line += ch;
+        }
+        lines.push(line);
+        lines.slice(0, 5).forEach((l, li) => {
+          ctx.fillText(l, coverX + COVER_W / 2, coverY + COVER_H / 2 - (lines.length - 1) * 7 + li * 14);
+        });
+        ctx.textAlign = 'left';
+      }
+
+      // date badge
+      ctx.fillStyle = '#f4f4f5';
+      roundRect(ctx, x + 6, y + COVER_H + 18, CARD_W - 12, 16, 8);
+      ctx.fill();
+      ctx.fillStyle = '#71717a';
+      ctx.font = '9px Inter, sans-serif';
+      ctx.textAlign = 'center';
+      ctx.fillText(book.finishedAt || '', x + CARD_W / 2, y + COVER_H + 29);
+
+      // title
+      ctx.fillStyle = '#18181b';
+      ctx.font = 'bold 10px Inter, sans-serif';
+      let title = book.title;
+      while (ctx.measureText(title).width > CARD_W - 12 && title.length > 0) title = title.slice(0, -1);
+      if (title !== book.title) title += '…';
+      ctx.fillText(title, x + CARD_W / 2, y + COVER_H + 48);
+      ctx.textAlign = 'left';
+    }
+
+    for (let i = 0; i < doneBooks.length; i++) {
+      const book = doneBooks[i];
+      const col = i % RIGHT_COLS;
+      const row = Math.floor(i / RIGHT_COLS);
+      const x = LEFT_W + COL_DIV + col * (CARD_W + GAP);
+      const y = HEADER_H + PAD + SECTION_TITLE_H + row * (CARD_H + GAP);
+      await drawCard(book, x, y);
     }
 
     // download
