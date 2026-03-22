@@ -484,12 +484,28 @@
     return COLORS[Math.abs(h) % COLORS.length];
   }
 
-  function coverUrl(isbn) {
-    return isbn ? `https://books.google.com/books/content?vid=ISBN${isbn}&printsec=frontcover&img=1&zoom=1` : null;
-  }
+  // 硬编码封面 URL，彻底解决中文书无封面问题
+  const COVERS = {
+    '思考，快与慢': 'https://books.google.com/books/content?id=TA7Q27RWlj0C&printsec=frontcover&img=1&zoom=2&source=gbs_api',
+    '麦肯锡结构化战略思维': 'https://books.google.com/books/content?id=5YrBEQAAQBAJ&printsec=frontcover&img=1&zoom=2&source=gbs_api',
+    '改变心理学的40项研究': 'https://books.google.com/books/content?id=TDx9AAAAMAAJ&printsec=frontcover&img=1&zoom=2&source=gbs_api',
+    "Don't Make Me Think": 'https://books.google.com/books/content?id=qahpAgAAQBAJ&printsec=frontcover&img=1&zoom=2&source=gbs_api',
+    '为什么': 'https://books.google.com/books/content?id=VV0otAEACAAJ&printsec=frontcover&img=1&zoom=2&source=gbs_api',
+    '真体验': 'https://books.google.com/books/content?id=mT9BEQAAQBAJ&printsec=frontcover&img=1&zoom=2&source=gbs_api',
+    '你变了，世界就变了': 'https://books.google.com/books/content?id=JJdJEQAAQBAJ&printsec=frontcover&img=1&zoom=2&source=gbs_api',
+    '洛克菲勒留给儿子的38封信': 'https://books.google.com/books/content?id=WGUN0AEACAAJ&printsec=frontcover&img=1&zoom=2&source=gbs_api',
+    '用户体验定律': 'https://books.google.com/books/content?id=fve3yQEACAAJ&printsec=frontcover&img=1&zoom=2&source=gbs_api',
+    '这才是心理学（第11版）': 'https://books.google.com/books/content?id=5uOBMQEACAAJ&printsec=frontcover&img=1&zoom=2&source=gbs_api',
+    '老人与海': 'https://books.google.com/books/content?id=0rUwAQAAMAAJ&printsec=frontcover&img=1&zoom=2&source=gbs_api',
+    '学会提问，驾驭AI': 'https://books.google.com/books/content?id=F4DAEQAAQBAJ&printsec=frontcover&img=1&zoom=2&source=gbs_api',
+    '通用人工智能': 'https://books.google.com/books/content?id=KBpAEQAAQBAJ&printsec=frontcover&img=1&zoom=2&source=gbs_api',
+    '小王子（全彩英文版）': 'https://books.google.com/books/content?id=VQEUswEACAAJ&printsec=frontcover&img=1&zoom=2&source=gbs_api',
+    '认知觉醒': 'https://books.google.com/books/content?id=TjgNEQAAQBAJ&printsec=frontcover&img=1&zoom=2&source=gbs_api',
+    '最重要的事，只有一件': 'https://books.google.com/books/content?id=narQCwAAQBAJ&printsec=frontcover&img=1&zoom=2&source=gbs_api',
+  };
 
   function makeCover(book) {
-    const url = coverUrl(book.isbn);
+    const url = COVERS[book.title] || null;
     const bg = colorFor(book.title);
     if (!url) return `<div class="cover-ph" style="background:${bg}">${book.title}</div>`;
     return `<img src="${url}" alt="${book.title}" loading="lazy" onerror="this.parentNode.innerHTML='<div class=\\'cover-ph\\' style=\\'background:${bg}\\'>${book.title}</div>'">`;
@@ -681,9 +697,9 @@
       const coverY = y + 12;
       let drawn = false;
 
-      if (book.isbn) {
-        const url = `https://books.google.com/books/content?vid=ISBN${book.isbn}&printsec=frontcover&img=1&zoom=1`;
-        const img = await loadImg(url);
+      const bookCoverUrl = COVERS[book.title];
+      if (bookCoverUrl) {
+        const img = await loadImg(bookCoverUrl);
         if (img && img.naturalWidth > 10) {
           ctx.save();
           roundRect(ctx, coverX, coverY, COVER_W, COVER_H, 4);
