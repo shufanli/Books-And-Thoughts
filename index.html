@@ -10,22 +10,16 @@
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
     :root {
-      --bg: #0a0a0b;
-      --surface: #111113;
-      --surface-2: #18181b;
-      --border: rgba(255,255,255,0.08);
-      --border-hover: rgba(255,255,255,0.15);
-      --text: #fafafa;
-      --text-2: #a1a1aa;
-      --text-3: #52525b;
-      --accent: #6366f1;
-      --accent-glow: rgba(99,102,241,0.3);
-      --green: #22c55e;
-      --green-bg: rgba(34,197,94,0.1);
-      --blue: #3b82f6;
-      --blue-bg: rgba(59,130,246,0.1);
-      --yellow-bg: rgba(234,179,8,0.1);
-      --yellow: #eab308;
+      --bg: #f4f4f5;
+      --surface: #ffffff;
+      --surface-2: #f9f9fa;
+      --border: #e4e4e7;
+      --text: #18181b;
+      --text-2: #71717a;
+      --text-3: #a1a1aa;
+      --accent: #18181b;
+      --radius: 12px;
+      --radius-sm: 8px;
     }
 
     html { scroll-behavior: smooth; }
@@ -40,18 +34,16 @@
 
     /* ── NAV ── */
     nav {
-      position: fixed;
-      top: 0; left: 0; right: 0;
-      z-index: 100;
-      height: 56px;
+      position: sticky;
+      top: 0; z-index: 100;
+      background: rgba(255,255,255,0.9);
+      backdrop-filter: blur(12px);
+      border-bottom: 1px solid var(--border);
+      padding: 0 24px;
+      height: 52px;
       display: flex;
       align-items: center;
       justify-content: space-between;
-      padding: 0 32px;
-      background: rgba(10,10,11,0.8);
-      backdrop-filter: blur(16px);
-      -webkit-backdrop-filter: blur(16px);
-      border-bottom: 1px solid var(--border);
     }
 
     .nav-brand {
@@ -59,22 +51,11 @@
       font-weight: 700;
       color: var(--text);
       letter-spacing: -0.3px;
-      display: flex;
-      align-items: center;
-      gap: 8px;
-    }
-
-    .nav-brand span {
-      width: 24px; height: 24px;
-      background: var(--accent);
-      border-radius: 6px;
-      display: flex; align-items: center; justify-content: center;
-      font-size: 13px;
     }
 
     .nav-links {
       display: flex;
-      gap: 4px;
+      gap: 2px;
       list-style: none;
     }
 
@@ -83,455 +64,353 @@
       font-weight: 500;
       color: var(--text-2);
       text-decoration: none;
-      padding: 6px 12px;
+      padding: 5px 10px;
       border-radius: 6px;
       transition: all 0.15s;
     }
 
-    .nav-links a:hover {
-      color: var(--text);
-      background: var(--surface-2);
-    }
+    .nav-links a:hover { color: var(--text); background: var(--bg); }
 
     /* ── HERO ── */
     .hero {
-      padding: 128px 32px 80px;
-      max-width: 800px;
+      background: var(--surface);
+      border-bottom: 1px solid var(--border);
+      padding: 40px 24px 32px;
+    }
+
+    .hero-inner {
+      max-width: 1200px;
       margin: 0 auto;
-    }
-
-    .hero-badge {
-      display: inline-flex;
-      align-items: center;
-      gap: 6px;
-      font-size: 12px;
-      font-weight: 600;
-      color: var(--accent);
-      background: rgba(99,102,241,0.12);
-      border: 1px solid rgba(99,102,241,0.2);
-      padding: 4px 12px;
-      border-radius: 100px;
-      margin-bottom: 24px;
-      letter-spacing: 0.3px;
-    }
-
-    .hero-badge::before {
-      content: '';
-      width: 6px; height: 6px;
-      background: var(--accent);
-      border-radius: 50%;
-      animation: pulse 2s infinite;
-    }
-
-    @keyframes pulse {
-      0%, 100% { opacity: 1; }
-      50% { opacity: 0.4; }
+      display: flex;
+      align-items: flex-end;
+      justify-content: space-between;
+      gap: 24px;
+      flex-wrap: wrap;
     }
 
     .hero h1 {
-      font-size: clamp(40px, 6vw, 64px);
+      font-size: 32px;
       font-weight: 800;
-      letter-spacing: -2px;
-      line-height: 1.1;
-      margin-bottom: 20px;
-      color: var(--text);
-    }
-
-    .hero h1 .gradient {
-      background: linear-gradient(135deg, #6366f1 0%, #a855f7 50%, #ec4899 100%);
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-      background-clip: text;
+      letter-spacing: -1px;
+      line-height: 1.15;
+      margin-bottom: 6px;
     }
 
     .hero-desc {
-      font-size: 17px;
+      font-size: 14px;
       color: var(--text-2);
-      line-height: 1.7;
-      max-width: 480px;
-      margin-bottom: 48px;
     }
 
-    /* ── STATS ── */
     .stats {
       display: flex;
       gap: 0;
       border: 1px solid var(--border);
-      border-radius: 12px;
+      border-radius: var(--radius-sm);
       overflow: hidden;
-      background: var(--surface);
-      max-width: 420px;
+      flex-shrink: 0;
     }
 
     .stat {
-      flex: 1;
-      padding: 20px 24px;
+      padding: 12px 20px;
       border-right: 1px solid var(--border);
-      position: relative;
+      text-align: center;
     }
 
     .stat:last-child { border-right: none; }
 
     .stat-num {
-      font-size: 32px;
+      font-size: 22px;
       font-weight: 800;
-      letter-spacing: -1px;
+      letter-spacing: -0.5px;
       color: var(--text);
       line-height: 1;
-      margin-bottom: 4px;
     }
 
     .stat-label {
-      font-size: 12px;
+      font-size: 11px;
       color: var(--text-3);
       font-weight: 500;
+      margin-top: 2px;
+    }
+
+    /* ── MAIN LAYOUT ── */
+    .main {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 24px;
     }
 
     /* ── SECTION ── */
-    .section {
-      max-width: 800px;
-      margin: 0 auto;
-      padding: 0 32px 64px;
-    }
-
-    .section-label {
+    .section-header {
       display: flex;
       align-items: center;
-      gap: 12px;
-      margin-bottom: 24px;
+      gap: 8px;
+      margin-bottom: 14px;
+      margin-top: 32px;
     }
 
-    .section-label h2 {
-      font-size: 13px;
-      font-weight: 600;
+    .section-header:first-child { margin-top: 0; }
+
+    .section-title {
+      font-size: 12px;
+      font-weight: 700;
       text-transform: uppercase;
-      letter-spacing: 1px;
+      letter-spacing: 0.8px;
       color: var(--text-3);
     }
 
-    .section-label::after {
-      content: '';
+    .section-count {
+      font-size: 11px;
+      font-weight: 600;
+      color: var(--text-3);
+      background: var(--surface);
+      border: 1px solid var(--border);
+      padding: 1px 7px;
+      border-radius: 100px;
+    }
+
+    .divider {
       flex: 1;
       height: 1px;
       background: var(--border);
     }
 
-    .section-count {
-      font-size: 12px;
-      font-weight: 600;
-      color: var(--text-3);
-      background: var(--surface-2);
-      border: 1px solid var(--border);
-      padding: 2px 8px;
-      border-radius: 100px;
-    }
-
-    /* ── READING CARDS (featured) ── */
-    .reading-cards {
+    /* ── READING GRID ── */
+    .reading-grid {
       display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
-      gap: 12px;
-      margin-bottom: 64px;
+      grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+      gap: 10px;
     }
 
     .reading-card {
       background: var(--surface);
       border: 1px solid var(--border);
-      border-radius: 12px;
-      padding: 20px;
+      border-radius: var(--radius);
+      padding: 16px;
       display: flex;
-      gap: 16px;
-      position: relative;
-      overflow: hidden;
-      transition: border-color 0.2s, transform 0.2s;
-      cursor: default;
-    }
-
-    .reading-card::before {
-      content: '';
-      position: absolute;
-      inset: 0;
-      background: radial-gradient(600px circle at var(--mx,50%) var(--my,50%), rgba(99,102,241,0.06), transparent 40%);
-      pointer-events: none;
+      gap: 14px;
+      transition: box-shadow 0.15s, border-color 0.15s;
     }
 
     .reading-card:hover {
-      border-color: var(--border-hover);
-      transform: translateY(-1px);
+      box-shadow: 0 4px 16px rgba(0,0,0,0.06);
+      border-color: #d4d4d8;
     }
 
-    .reading-card-cover {
+    .r-cover {
       flex-shrink: 0;
-      width: 64px; height: 88px;
-      border-radius: 6px;
+      width: 60px; height: 84px;
+      border-radius: 5px;
       overflow: hidden;
-      background: var(--surface-2);
-      box-shadow: 0 4px 12px rgba(0,0,0,0.4);
+      background: var(--bg);
+      box-shadow: 0 2px 8px rgba(0,0,0,0.12);
     }
 
-    .reading-card-cover img {
-      width: 100%; height: 100%;
-      object-fit: cover;
-      display: block;
-    }
+    .r-cover img { width: 100%; height: 100%; object-fit: cover; display: block; }
 
-    .reading-card-body { flex: 1; min-width: 0; }
+    .r-body { flex: 1; min-width: 0; display: flex; flex-direction: column; justify-content: space-between; }
 
-    .reading-status {
+    .r-badge {
       display: inline-flex;
       align-items: center;
       gap: 5px;
-      font-size: 11px;
+      font-size: 10px;
       font-weight: 600;
-      color: var(--blue);
-      background: var(--blue-bg);
-      border: 1px solid rgba(59,130,246,0.2);
-      padding: 2px 8px;
+      color: #3b82f6;
+      background: #eff6ff;
+      border: 1px solid #bfdbfe;
+      padding: 2px 7px;
       border-radius: 100px;
-      margin-bottom: 10px;
+      margin-bottom: 7px;
+      letter-spacing: 0.2px;
     }
 
-    .reading-status::before {
+    .r-badge::before {
       content: '';
       width: 5px; height: 5px;
-      background: var(--blue);
+      background: #3b82f6;
       border-radius: 50%;
-      animation: pulse 2s infinite;
+      animation: blink 2s infinite;
     }
 
-    .reading-title {
-      font-size: 15px;
+    @keyframes blink { 0%,100%{opacity:1} 50%{opacity:0.3} }
+
+    .r-title {
+      font-size: 14px;
       font-weight: 700;
-      line-height: 1.3;
-      margin-bottom: 3px;
+      line-height: 1.35;
       letter-spacing: -0.2px;
+      margin-bottom: 2px;
     }
 
-    .reading-author {
+    .r-author {
       font-size: 12px;
       color: var(--text-2);
-      margin-bottom: 16px;
+      margin-bottom: 12px;
     }
 
-    .progress-wrap {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-    }
+    .progress-wrap { display: flex; align-items: center; gap: 8px; }
 
     .progress-track {
       flex: 1;
       height: 3px;
-      background: var(--surface-2);
+      background: var(--bg);
       border-radius: 100px;
       overflow: hidden;
     }
 
     .progress-fill {
       height: 100%;
-      background: linear-gradient(90deg, var(--accent), #a855f7);
+      background: #18181b;
       border-radius: 100px;
-      transition: width 1s ease;
     }
 
-    .progress-pct {
-      font-size: 11px;
-      font-weight: 600;
-      color: var(--text-3);
-      white-space: nowrap;
-    }
+    .progress-pct { font-size: 11px; font-weight: 600; color: var(--text-3); white-space: nowrap; }
 
-    /* ── DONE TABLE ── */
-    .done-table {
-      border: 1px solid var(--border);
-      border-radius: 12px;
-      overflow: hidden;
-      margin-bottom: 64px;
-    }
-
-    .done-row {
+    /* ── DONE GRID ── */
+    .done-grid {
       display: grid;
-      grid-template-columns: 48px 1fr auto;
-      align-items: center;
-      gap: 16px;
-      padding: 14px 20px;
-      border-bottom: 1px solid var(--border);
-      transition: background 0.15s;
+      grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+      gap: 10px;
     }
 
-    .done-row:last-child { border-bottom: none; }
-    .done-row:hover { background: var(--surface); }
+    .done-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 14px;
+      display: flex;
+      gap: 12px;
+      align-items: flex-start;
+      transition: box-shadow 0.15s, border-color 0.15s;
+    }
 
-    .done-cover {
-      width: 36px; height: 50px;
+    .done-card:hover {
+      box-shadow: 0 4px 16px rgba(0,0,0,0.06);
+      border-color: #d4d4d8;
+    }
+
+    .d-cover {
+      flex-shrink: 0;
+      width: 44px; height: 60px;
       border-radius: 4px;
       overflow: hidden;
-      background: var(--surface-2);
-      flex-shrink: 0;
-      box-shadow: 0 2px 8px rgba(0,0,0,0.3);
+      background: var(--bg);
+      box-shadow: 0 2px 6px rgba(0,0,0,0.1);
     }
 
-    .done-cover img { width: 100%; height: 100%; object-fit: cover; }
+    .d-cover img { width: 100%; height: 100%; object-fit: cover; display: block; }
 
-    .done-info {}
+    .d-body { flex: 1; min-width: 0; }
 
-    .done-title {
-      font-size: 14px;
-      font-weight: 600;
+    .d-title {
+      font-size: 13px;
+      font-weight: 700;
+      line-height: 1.35;
       letter-spacing: -0.2px;
-      white-space: nowrap;
+      margin-bottom: 3px;
       overflow: hidden;
-      text-overflow: ellipsis;
+      display: -webkit-box;
+      -webkit-line-clamp: 2;
+      -webkit-box-orient: vertical;
     }
 
-    .done-sub {
+    .d-author { font-size: 11px; color: var(--text-2); margin-bottom: 8px; }
+
+    .d-footer {
       display: flex;
       align-items: center;
-      gap: 8px;
-      margin-top: 3px;
-    }
-
-    .done-author {
-      font-size: 12px;
-      color: var(--text-2);
+      justify-content: space-between;
+      gap: 6px;
     }
 
     .tag {
       font-size: 10px;
       font-weight: 600;
       color: var(--text-3);
-      background: var(--surface-2);
+      background: var(--bg);
       border: 1px solid var(--border);
-      padding: 1px 7px;
+      padding: 1px 6px;
       border-radius: 4px;
-      text-transform: uppercase;
-      letter-spacing: 0.4px;
     }
 
-    .done-right {
-      display: flex;
-      flex-direction: column;
-      align-items: flex-end;
-      gap: 4px;
-    }
+    .d-date { font-size: 11px; color: var(--text-3); }
 
-    .done-check {
-      width: 20px; height: 20px;
-      border-radius: 50%;
-      background: var(--green-bg);
-      border: 1px solid rgba(34,197,94,0.25);
-      display: flex; align-items: center; justify-content: center;
-      font-size: 10px;
-      color: var(--green);
-    }
-
-    .done-date {
+    .d-notes {
       font-size: 11px;
-      color: var(--text-3);
-    }
-
-    .done-notes {
-      font-size: 11px;
-      color: var(--accent);
+      color: var(--text-2);
       text-decoration: none;
       font-weight: 500;
     }
 
-    .done-notes:hover { text-decoration: underline; }
+    .d-notes:hover { color: var(--text); }
 
     /* ── TODO GRID ── */
     .todo-grid {
       display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
-      gap: 8px;
+      grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+      gap: 10px;
     }
 
     .todo-card {
       background: var(--surface);
       border: 1px solid var(--border);
-      border-radius: 10px;
+      border-radius: var(--radius);
       padding: 14px;
       display: flex;
       gap: 12px;
       align-items: flex-start;
-      transition: border-color 0.15s, transform 0.15s;
+      transition: box-shadow 0.15s;
     }
 
-    .todo-card:hover {
-      border-color: var(--border-hover);
-      transform: translateY(-1px);
-    }
+    .todo-card:hover { box-shadow: 0 4px 16px rgba(0,0,0,0.06); border-color: #d4d4d8; }
 
-    .todo-cover {
+    .t-cover {
       flex-shrink: 0;
       width: 36px; height: 50px;
       border-radius: 4px;
       overflow: hidden;
-      background: var(--surface-2);
+      background: var(--bg);
     }
 
-    .todo-cover img { width: 100%; height: 100%; object-fit: cover; }
+    .t-cover img { width: 100%; height: 100%; object-fit: cover; display: block; }
 
-    .todo-title {
-      font-size: 12px;
-      font-weight: 600;
-      line-height: 1.4;
-      color: var(--text);
-    }
-
-    .todo-author {
-      font-size: 11px;
-      color: var(--text-3);
-      margin-top: 3px;
-    }
+    .t-title { font-size: 12px; font-weight: 600; line-height: 1.4; color: var(--text); }
+    .t-author { font-size: 11px; color: var(--text-3); margin-top: 3px; }
 
     /* ── COVER PLACEHOLDER ── */
-    .cover-placeholder {
+    .cover-ph {
       width: 100%; height: 100%;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 8px;
-      font-weight: 700;
-      color: rgba(255,255,255,0.6);
-      text-align: center;
-      padding: 4px;
-      line-height: 1.3;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 8px; font-weight: 700;
+      color: rgba(255,255,255,0.75);
+      text-align: center; padding: 4px; line-height: 1.3;
     }
 
     /* ── FOOTER ── */
     footer {
-      border-top: 1px solid var(--border);
-      padding: 32px;
       text-align: center;
-      font-size: 13px;
+      font-size: 12px;
       color: var(--text-3);
-      max-width: 800px;
-      margin: 0 auto;
+      padding: 32px 24px;
+      border-top: 1px solid var(--border);
+      margin-top: 16px;
     }
 
-    /* ── RESPONSIVE ── */
     @media (max-width: 576px) {
-      nav { padding: 0 20px; }
-      .hero { padding: 96px 20px 48px; }
-      .hero h1 { font-size: 36px; letter-spacing: -1px; }
-      .section { padding: 0 20px 48px; }
-      .reading-cards { grid-template-columns: 1fr; }
+      nav { padding: 0 16px; }
+      .hero { padding: 28px 16px 24px; }
+      .main { padding: 16px; }
+      .reading-grid, .done-grid { grid-template-columns: 1fr; }
       .todo-grid { grid-template-columns: repeat(2, 1fr); }
-      .stats { max-width: 100%; }
-      .done-row { grid-template-columns: 36px 1fr auto; padding: 12px 16px; }
-      footer { padding: 24px 20px; }
+      .hero-inner { flex-direction: column; align-items: flex-start; }
     }
   </style>
 </head>
 <body>
 
-<!-- NAV -->
 <nav>
-  <div class="nav-brand">
-    <span>📚</span>
-    Books &amp; Thoughts
-  </div>
+  <div class="nav-brand">📚 Books &amp; Thoughts</div>
   <ul class="nav-links">
     <li><a href="#reading">在读</a></li>
     <li><a href="#done">已读</a></li>
@@ -539,39 +418,39 @@
   </ul>
 </nav>
 
-<!-- HERO -->
 <div class="hero">
-  <div class="hero-badge">Reading Journal 2026</div>
-  <h1>书籍与<br><span class="gradient">思考</span></h1>
-  <p class="hero-desc">和 Claude 一起读书，记录每一本书带来的灵感与对话。</p>
-  <div class="stats" id="stats"></div>
+  <div class="hero-inner">
+    <div>
+      <h1>Books &amp; Thoughts</h1>
+      <div class="hero-desc">和 Claude 一起读书，记录思考与对话</div>
+    </div>
+    <div class="stats" id="stats"></div>
+  </div>
 </div>
 
-<!-- READING -->
-<div class="section" id="reading">
-  <div class="section-label">
-    <h2>正在读</h2>
+<div class="main">
+
+  <div class="section-header" id="reading">
+    <span class="section-title">正在读</span>
     <span class="section-count" id="count-reading"></span>
+    <div class="divider"></div>
   </div>
-  <div class="reading-cards" id="books-reading"></div>
-</div>
+  <div class="reading-grid" id="books-reading"></div>
 
-<!-- DONE -->
-<div class="section" id="done">
-  <div class="section-label">
-    <h2>已读完</h2>
+  <div class="section-header" id="done">
+    <span class="section-title">已读完</span>
     <span class="section-count" id="count-done"></span>
+    <div class="divider"></div>
   </div>
-  <div class="done-table" id="books-done"></div>
-</div>
+  <div class="done-grid" id="books-done"></div>
 
-<!-- TODO -->
-<div class="section" id="list">
-  <div class="section-label">
-    <h2>书单</h2>
+  <div class="section-header" id="list">
+    <span class="section-title">书单</span>
     <span class="section-count" id="count-todo"></span>
+    <div class="divider"></div>
   </div>
   <div class="todo-grid" id="books-todo"></div>
+
 </div>
 
 <footer>用心读书 · 用文字留存思考 · <span id="yr"></span></footer>
@@ -579,7 +458,7 @@
 <script>
   document.getElementById('yr').textContent = new Date().getFullYear();
 
-  const COLORS = ['#4f46e5','#7c3aed','#0891b2','#059669','#d97706','#dc2626','#db2777','#2563eb'];
+  const COLORS = ['#4f46e5','#7c3aed','#0891b2','#059669','#d97706','#dc2626','#db2777','#374151'];
   function colorFor(t) {
     let h = 0;
     for (let c of t) h = (h * 31 + c.charCodeAt(0)) & 0xffffffff;
@@ -587,19 +466,17 @@
   }
 
   function coverUrl(isbn) {
-    if (!isbn) return null;
-    return `https://books.google.com/books/content?vid=ISBN${isbn}&printsec=frontcover&img=1&zoom=1`;
+    return isbn ? `https://books.google.com/books/content?vid=ISBN${isbn}&printsec=frontcover&img=1&zoom=1` : null;
   }
 
-  function makeCover(book, w, h) {
+  function makeCover(book) {
     const url = coverUrl(book.isbn);
     const bg = colorFor(book.title);
-    if (!url) return `<div class="cover-placeholder" style="background:${bg}">${book.title}</div>`;
-    return `<img src="${url}" alt="${book.title}" loading="lazy" onerror="this.parentNode.innerHTML='<div class=\\'cover-placeholder\\' style=\\'background:${bg}\\'>${book.title}</div>'">`;
+    if (!url) return `<div class="cover-ph" style="background:${bg}">${book.title}</div>`;
+    return `<img src="${url}" alt="${book.title}" loading="lazy" onerror="this.parentNode.innerHTML='<div class=\\'cover-ph\\' style=\\'background:${bg}\\'>${book.title}</div>'">`;
   }
 
   const catMap = { tech:'技术', business:'商业', psychology:'心理', science:'科学', 'self-improvement':'成长', philosophy:'哲学', history:'历史', fiction:'文学' };
-  const catLabel = c => catMap[c] || c;
 
   const books = {
     reading: [
@@ -628,25 +505,25 @@
     ],
   };
 
-  // Stats
   document.getElementById('stats').innerHTML = `
-    <div class="stat"><div class="stat-num">${books.reading.length}</div><div class="stat-label">在读中</div></div>
-    <div class="stat"><div class="stat-num">${books.done.length}</div><div class="stat-label">已读完</div></div>
-    <div class="stat"><div class="stat-num">${books.todo.length}</div><div class="stat-label">待读书单</div></div>
+    <div class="stat"><div class="stat-num">${books.reading.length}</div><div class="stat-label">在读</div></div>
+    <div class="stat"><div class="stat-num">${books.done.length}</div><div class="stat-label">已读</div></div>
+    <div class="stat"><div class="stat-num">${books.todo.length}</div><div class="stat-label">待读</div></div>
   `;
 
   document.getElementById('count-reading').textContent = books.reading.length;
   document.getElementById('count-done').textContent = books.done.length;
   document.getElementById('count-todo').textContent = books.todo.length;
 
-  // Reading
   document.getElementById('books-reading').innerHTML = books.reading.map(b => `
     <div class="reading-card">
-      <div class="reading-card-cover">${makeCover(b)}</div>
-      <div class="reading-card-body">
-        <div class="reading-status">正在读</div>
-        <div class="reading-title">${b.title}</div>
-        <div class="reading-author">${b.author}</div>
+      <div class="r-cover">${makeCover(b)}</div>
+      <div class="r-body">
+        <div>
+          <div class="r-badge">正在读</div>
+          <div class="r-title">${b.title}</div>
+          <div class="r-author">${b.author}</div>
+        </div>
         <div class="progress-wrap">
           <div class="progress-track"><div class="progress-fill" style="width:${b.progress}%"></div></div>
           <span class="progress-pct">${b.progress > 0 ? b.progress + '%' : '未开始'}</span>
@@ -655,44 +532,30 @@
     </div>
   `).join('');
 
-  // Done
   document.getElementById('books-done').innerHTML = books.done.map(b => `
-    <div class="done-row">
-      <div class="done-cover">${makeCover(b)}</div>
-      <div class="done-info">
-        <div class="done-title">${b.title}</div>
-        <div class="done-sub">
-          <span class="done-author">${b.author}</span>
-          <span class="tag">${catLabel(b.category)}</span>
-          ${b.notes ? `<a class="done-notes" href="${b.notes}">📝 笔记</a>` : ''}
+    <div class="done-card">
+      <div class="d-cover">${makeCover(b)}</div>
+      <div class="d-body">
+        <div class="d-title">${b.title}</div>
+        <div class="d-author">${b.author || '—'}</div>
+        <div class="d-footer">
+          <span class="tag">${catMap[b.category] || b.category}</span>
+          <span class="d-date">${b.finishedAt}</span>
+          ${b.notes ? `<a class="d-notes" href="${b.notes}">笔记</a>` : ''}
         </div>
       </div>
-      <div class="done-right">
-        <div class="done-check">✓</div>
-        <div class="done-date">${b.finishedAt}</div>
-      </div>
     </div>
   `).join('');
 
-  // Todo
   document.getElementById('books-todo').innerHTML = books.todo.map(b => `
     <div class="todo-card">
-      <div class="todo-cover">${makeCover(b)}</div>
+      <div class="t-cover">${makeCover(b)}</div>
       <div>
-        <div class="todo-title">${b.title}</div>
-        <div class="todo-author">${b.author}</div>
+        <div class="t-title">${b.title}</div>
+        <div class="t-author">${b.author}</div>
       </div>
     </div>
   `).join('');
-
-  // Card glow effect
-  document.querySelectorAll('.reading-card').forEach(card => {
-    card.addEventListener('mousemove', e => {
-      const r = card.getBoundingClientRect();
-      card.style.setProperty('--mx', ((e.clientX - r.left) / r.width * 100) + '%');
-      card.style.setProperty('--my', ((e.clientY - r.top) / r.height * 100) + '%');
-    });
-  });
 </script>
 
 </body>
