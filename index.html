@@ -550,7 +550,8 @@
   }
 
   function coverUrl(isbn) {
-    return isbn ? `https://covers.openlibrary.org/b/isbn/${isbn}-M.jpg` : null;
+    if (!isbn) return null;
+    return `https://books.google.com/books/content?vid=ISBN${isbn}&printsec=frontcover&img=1&zoom=1`;
   }
 
   function makeCoverImg(book, w, h) {
