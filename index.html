@@ -555,9 +555,11 @@
 
   function makeCoverImg(book, w, h) {
     const url = coverUrl(book.isbn);
-    const ph = `<div class="cover-placeholder" style="background:${colorFor(book.title)};width:${w}px;height:${h}px">${book.title}</div>`;
-    if (!url) return ph;
-    return `<img src="${url}" alt="${book.title}" onerror="this.outerHTML='${ph.replace(/'/g,"&#39;")}'" loading="lazy">`;
+    const bg = colorFor(book.title);
+    if (!url) {
+      return `<div class="cover-placeholder" style="background:${bg}">${book.title}</div>`;
+    }
+    return `<img src="${url}" alt="${book.title}" loading="lazy" onerror="this.parentNode.innerHTML='<div class=\\'cover-placeholder\\' style=\\'background:${bg}\\'>${book.title}</div>'">`;
   }
 
   const categoryLabel = c => ({
