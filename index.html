@@ -597,26 +597,20 @@
     const doneBooks = [...books.done].sort((a,b) => b.finishedAt.localeCompare(a.finishedAt)).map(b => ({ ...b, status: 'done' }));
 
     // 布局参数
-    const PAD = 28, GAP = 12, SECTION_GAP = 20;
+    const PAD = 28, GAP = 12;
     const CARD_W = 140, CARD_H = 210, COVER_W = 88, COVER_H = 124;
     const HEADER_H = 120;
-    const SECTION_TITLE_H = 36;
+    const SECTION_TITLE_H = 40;
+    const SECTION_GAP = 24;
 
-    // 左栏：正在读，右栏：已读完
-    const LEFT_COLS = Math.min(readingBooks.length, 2) || 1;
-    const RIGHT_COLS = 4;
-    const COL_DIV = 16; // 中间分隔
+    const COLS = 4;
+    const W = PAD * 2 + COLS * CARD_W + (COLS - 1) * GAP;
 
-    const LEFT_W = PAD + LEFT_COLS * CARD_W + (LEFT_COLS - 1) * GAP + PAD / 2;
-    const RIGHT_W = PAD / 2 + RIGHT_COLS * CARD_W + (RIGHT_COLS - 1) * GAP + PAD;
-    const W = LEFT_W + COL_DIV + RIGHT_W;
-
-    const leftRows = Math.ceil(readingBooks.length / LEFT_COLS);
-    const rightRows = Math.ceil(doneBooks.length / RIGHT_COLS);
-    const leftH = SECTION_TITLE_H + leftRows * CARD_H + (leftRows - 1) * GAP;
-    const rightH = SECTION_TITLE_H + rightRows * CARD_H + (rightRows - 1) * GAP;
-    const contentH = Math.max(leftH, rightH);
-    const H = HEADER_H + PAD + contentH + PAD;
+    const readingRows = Math.ceil(readingBooks.length / COLS);
+    const doneRows = Math.ceil(doneBooks.length / COLS);
+    const readingH = SECTION_TITLE_H + readingRows * CARD_H + (readingRows - 1) * GAP;
+    const doneH = SECTION_TITLE_H + doneRows * CARD_H + (doneRows - 1) * GAP;
+    const H = HEADER_H + PAD + readingH + SECTION_GAP + doneH + PAD;
 
     const canvas = document.createElement('canvas');
     canvas.width = W * 2; canvas.height = H * 2;
@@ -702,36 +696,27 @@
     // 绘制分区标签
     function drawSectionLabel(x, y, text, color) {
       ctx.fillStyle = color;
-      ctx.font = 'bold 12px Inter, sans-serif';
-      ctx.fillText(text, x, y + 14);
+      ctx.font = 'bold 13px Inter, sans-serif';
+      ctx.fillText(text, x, y + 16);
       ctx.strokeStyle = color;
       ctx.lineWidth = 2;
       ctx.beginPath();
-      ctx.moveTo(x, y + 22);
-      ctx.lineTo(x + ctx.measureText(text).width, y + 22);
+      ctx.moveTo(x, y + 26);
+      ctx.lineTo(x + ctx.measureText(text).width, y + 26);
       ctx.stroke();
     }
 
-    drawSectionLabel(PAD, HEADER_H + PAD, '● 正在读', '#3b82f6');
-    drawSectionLabel(LEFT_W + COL_DIV, HEADER_H + PAD, '✓ 已读完', '#71717a');
+    // 正在读区域
+    const readingTop = HEADER_H + PAD;
+    drawSectionLabel(PAD, readingTop, '● 正在读', '#3b82f6');
 
-    // 中间分隔线
-    ctx.strokeStyle = '#e4e4e7';
-    ctx.lineWidth = 1;
-    ctx.setLineDash([4, 4]);
-    ctx.beginPath();
-    ctx.moveTo(LEFT_W + COL_DIV / 2, HEADER_H + PAD);
-    ctx.lineTo(LEFT_W + COL_DIV / 2, H - PAD);
-    ctx.stroke();
-    ctx.setLineDash([]);
-
-    // 绘制左栏（在读）
+    // 绘制在读卡片
     for (let i = 0; i < readingBooks.length; i++) {
       const book = readingBooks[i];
-      const col = i % LEFT_COLS;
-      const row = Math.floor(i / LEFT_COLS);
+      const col = i % COLS;
+      const row = Math.floor(i / COLS);
       const x = PAD + col * (CARD_W + GAP);
-      const y = HEADER_H + PAD + SECTION_TITLE_H + row * (CARD_H + GAP);
+      const y = readingTop + SECTION_TITLE_H + row * (CARD_H + GAP);
 
       // card bg
       ctx.fillStyle = '#ffffff';
@@ -812,7 +797,11 @@
       ctx.textAlign = 'left';
     }
 
-    // 绘制右栏（已读）
+    // 已读区域
+    const doneTop = readingTop + readingH + SECTION_GAP;
+    drawSectionLabel(PAD, doneTop, '✓ 已读完', '#71717a');
+
+    // 绘制已读卡片
     async function drawCard(book, x, y) {
       ctx.fillStyle = '#ffffff';
       roundRect(ctx, x, y, CARD_W, CARD_H, 8);
@@ -878,10 +867,10 @@
 
     for (let i = 0; i < doneBooks.length; i++) {
       const book = doneBooks[i];
-      const col = i % RIGHT_COLS;
-      const row = Math.floor(i / RIGHT_COLS);
-      const x = LEFT_W + COL_DIV + col * (CARD_W + GAP);
-      const y = HEADER_H + PAD + SECTION_TITLE_H + row * (CARD_H + GAP);
+      const col = i % COLS;
+      const row = Math.floor(i / COLS);
+      const x = PAD + col * (CARD_W + GAP);
+      const y = doneTop + SECTION_TITLE_H + row * (CARD_H + GAP);
       await drawCard(book, x, y);
     }
 
