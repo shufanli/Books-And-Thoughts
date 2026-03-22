@@ -397,6 +397,24 @@
       margin-top: 16px;
     }
 
+    .share-btn {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--text);
+      background: var(--bg);
+      border: 1px solid var(--border);
+      padding: 6px 14px;
+      border-radius: 7px;
+      cursor: pointer;
+      transition: all 0.15s;
+      font-family: inherit;
+    }
+    .share-btn:hover { background: var(--border); }
+    .share-btn:disabled { opacity: 0.5; cursor: not-allowed; }
+
     @media (max-width: 576px) {
       nav { padding: 0 16px; }
       .hero { padding: 28px 16px 24px; }
@@ -416,6 +434,7 @@
     <li><a href="#done">已读</a></li>
     <li><a href="#list">书单</a></li>
   </ul>
+  <button class="share-btn" id="share-btn" onclick="generateShareImage()">🖼 生成分享图</button>
 </nav>
 
 <div class="hero">
@@ -558,6 +577,182 @@
       </div>
     </div>
   `).join('');
+
+  async function generateShareImage() {
+    const btn = document.getElementById('share-btn');
+    btn.disabled = true;
+    btn.textContent = '⏳ 生成中…';
+
+    const allBooks = [
+      ...books.reading.map(b => ({ ...b, status: 'reading' })),
+      ...books.done.map(b => ({ ...b, status: 'done' })),
+    ];
+
+    const COLS = 4;
+    const CARD_W = 160, CARD_H = 220;
+    const COVER_W = 100, COVER_H = 140;
+    const PAD = 24, GAP = 16;
+    const HEADER_H = 100;
+
+    const rows = Math.ceil(allBooks.length / COLS);
+    const W = PAD * 2 + COLS * CARD_W + (COLS - 1) * GAP;
+    const H = HEADER_H + PAD + rows * CARD_H + (rows - 1) * GAP + PAD;
+
+    const canvas = document.createElement('canvas');
+    canvas.width = W * 2; canvas.height = H * 2;
+    const ctx = canvas.getContext('2d');
+    ctx.scale(2, 2);
+
+    // bg
+    ctx.fillStyle = '#f4f4f5';
+    ctx.fillRect(0, 0, W, H);
+
+    // header
+    ctx.fillStyle = '#ffffff';
+    ctx.fillRect(0, 0, W, HEADER_H);
+    ctx.strokeStyle = '#e4e4e7';
+    ctx.lineWidth = 1;
+    ctx.beginPath(); ctx.moveTo(0, HEADER_H); ctx.lineTo(W, HEADER_H); ctx.stroke();
+
+    ctx.fillStyle = '#18181b';
+    ctx.font = 'bold 22px Inter, sans-serif';
+    ctx.fillText('📚 Books & Thoughts', PAD, 36);
+
+    ctx.fillStyle = '#71717a';
+    ctx.font = '13px Inter, sans-serif';
+    ctx.fillText(`已读 ${books.done.length} 本 · 在读 ${books.reading.length} 本`, PAD, 58);
+
+    ctx.fillStyle = '#a1a1aa';
+    ctx.font = '11px Inter, sans-serif';
+    ctx.fillText('allinai.asia/books', PAD, 80);
+
+    // load cover images
+    async function loadImg(url) {
+      return new Promise(res => {
+        const img = new Image();
+        img.crossOrigin = 'anonymous';
+        img.onload = () => res(img);
+        img.onerror = () => res(null);
+        img.src = url;
+      });
+    }
+
+    const BOOK_COLORS = ['#4f46e5','#7c3aed','#0891b2','#059669','#d97706','#dc2626','#db2777','#374151'];
+    function colorFor(t) {
+      let h = 0;
+      for (let c of t) h = (h * 31 + c.charCodeAt(0)) & 0xffffffff;
+      return BOOK_COLORS[Math.abs(h) % BOOK_COLORS.length];
+    }
+
+    function roundRect(ctx, x, y, w, h, r) {
+      ctx.beginPath();
+      ctx.moveTo(x + r, y);
+      ctx.lineTo(x + w - r, y);
+      ctx.arcTo(x + w, y, x + w, y + r, r);
+      ctx.lineTo(x + w, y + h - r);
+      ctx.arcTo(x + w, y + h, x + w - r, y + h, r);
+      ctx.lineTo(x + r, y + h);
+      ctx.arcTo(x, y + h, x, y + h - r, r);
+      ctx.lineTo(x, y + r);
+      ctx.arcTo(x, y, x + r, y, r);
+      ctx.closePath();
+    }
+
+    for (let i = 0; i < allBooks.length; i++) {
+      const book = allBooks[i];
+      const col = i % COLS;
+      const row = Math.floor(i / COLS);
+      const x = PAD + col * (CARD_W + GAP);
+      const y = HEADER_H + PAD + row * (CARD_H + GAP);
+
+      // card bg
+      ctx.fillStyle = '#ffffff';
+      roundRect(ctx, x, y, CARD_W, CARD_H, 8);
+      ctx.fill();
+      ctx.strokeStyle = '#e4e4e7';
+      ctx.lineWidth = 1;
+      roundRect(ctx, x, y, CARD_W, CARD_H, 8);
+      ctx.stroke();
+
+      // cover
+      const coverX = x + (CARD_W - COVER_W) / 2;
+      const coverY = y + 12;
+      let drawn = false;
+
+      if (book.isbn) {
+        const url = `https://books.google.com/books/content?vid=ISBN${book.isbn}&printsec=frontcover&img=1&zoom=1`;
+        const img = await loadImg(url);
+        if (img && img.naturalWidth > 10) {
+          ctx.save();
+          roundRect(ctx, coverX, coverY, COVER_W, COVER_H, 4);
+          ctx.clip();
+          ctx.drawImage(img, coverX, coverY, COVER_W, COVER_H);
+          ctx.restore();
+          drawn = true;
+        }
+      }
+
+      if (!drawn) {
+        ctx.fillStyle = colorFor(book.title);
+        roundRect(ctx, coverX, coverY, COVER_W, COVER_H, 4);
+        ctx.fill();
+        ctx.fillStyle = 'rgba(255,255,255,0.9)';
+        ctx.font = 'bold 11px Inter, sans-serif';
+        ctx.textAlign = 'center';
+        const words = book.title.split('');
+        let line = '', lines = [];
+        for (let ch of words) {
+          if (ctx.measureText(line + ch).width > COVER_W - 10) { lines.push(line); line = ch; }
+          else line += ch;
+        }
+        lines.push(line);
+        lines.slice(0, 5).forEach((l, li) => {
+          ctx.fillText(l, coverX + COVER_W / 2, coverY + COVER_H / 2 - (lines.length - 1) * 7 + li * 14);
+        });
+        ctx.textAlign = 'left';
+      }
+
+      // status badge
+      if (book.status === 'reading') {
+        ctx.fillStyle = '#eff6ff';
+        roundRect(ctx, x + 6, y + COVER_H + 18, CARD_W - 12, 16, 8);
+        ctx.fill();
+        ctx.fillStyle = '#3b82f6';
+        ctx.font = 'bold 9px Inter, sans-serif';
+        ctx.textAlign = 'center';
+        ctx.fillText('● 正在读', x + CARD_W / 2, y + COVER_H + 29);
+      } else {
+        ctx.fillStyle = '#f4f4f5';
+        roundRect(ctx, x + 6, y + COVER_H + 18, CARD_W - 12, 16, 8);
+        ctx.fill();
+        ctx.fillStyle = '#a1a1aa';
+        ctx.font = 'bold 9px Inter, sans-serif';
+        ctx.textAlign = 'center';
+        ctx.fillText('✓ ' + book.finishedAt, x + CARD_W / 2, y + COVER_H + 29);
+      }
+
+      // title
+      ctx.fillStyle = '#18181b';
+      ctx.font = 'bold 11px Inter, sans-serif';
+      ctx.textAlign = 'center';
+      const titleMaxW = CARD_W - 12;
+      let title = book.title;
+      while (ctx.measureText(title).width > titleMaxW && title.length > 0) title = title.slice(0, -1);
+      if (title !== book.title) title += '…';
+      ctx.fillText(title, x + CARD_W / 2, y + COVER_H + 48);
+
+      ctx.textAlign = 'left';
+    }
+
+    // download
+    const link = document.createElement('a');
+    link.download = 'books-and-thoughts.png';
+    link.href = canvas.toDataURL('image/png');
+    link.click();
+
+    btn.disabled = false;
+    btn.innerHTML = '🖼 生成分享图';
+  }
 </script>
 
 </body>
