@@ -4,8 +4,8 @@
 
 | 书名 | 分类 | 读到 | 最后阅读 |
 |------|------|------|---------|
-| [《思考，快与慢》](./psychology/thinking-fast-and-slow/notes.md) | psychology | 第5章 | 2026-03-16 |
-| [《麦肯锡结构化战略思维》](./business/mckinsey-structured-strategic-thinking/notes.md) | business | 未开始 | 2026-03-14 |
+| [《思考，快与慢》](./psychology/thinking-fast-and-slow/notes.md) | psychology | 第9章 | 2026-03-21 |
+| [《麦肯锡结构化战略思维》](./business/mckinsey-structured-strategic-thinking/notes.md) | business | 第2章 | 2026-03-22 |
 
 ## 待读（inbox）
 
