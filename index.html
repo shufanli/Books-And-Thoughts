@@ -532,6 +532,8 @@
     </div>
   `).join('');
 
+  books.done.sort((a, b) => b.finishedAt.localeCompare(a.finishedAt));
+
   document.getElementById('books-done').innerHTML = books.done.map(b => `
     <div class="done-card">
       <div class="d-cover">${makeCover(b)}</div>
