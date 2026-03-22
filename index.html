@@ -4,56 +4,58 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Books & Thoughts</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
   <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
     :root {
-      --bg: #faf9f7;
-      --surface: #ffffff;
-      --border: #e8e4dd;
-      --text: #1c1c1e;
-      --text-secondary: #6e6e73;
-      --text-muted: #aeaeb2;
-      --accent: #2c5f2e;
-      --accent-light: #edf5ee;
-      --reading-color: #1d4ed8;
-      --reading-bg: #eff6ff;
-      --done-color: #166534;
-      --done-bg: #f0fdf4;
-      --tag-bg: #f2f0ec;
-      --shadow-sm: 0 1px 3px rgba(0,0,0,0.06), 0 1px 2px rgba(0,0,0,0.04);
-      --shadow-md: 0 4px 16px rgba(0,0,0,0.08), 0 2px 6px rgba(0,0,0,0.04);
-      --shadow-lg: 0 12px 40px rgba(0,0,0,0.1), 0 4px 12px rgba(0,0,0,0.06);
-      --radius: 12px;
-      --radius-sm: 8px;
+      --bg: #0a0a0b;
+      --surface: #111113;
+      --surface-2: #18181b;
+      --border: rgba(255,255,255,0.08);
+      --border-hover: rgba(255,255,255,0.15);
+      --text: #fafafa;
+      --text-2: #a1a1aa;
+      --text-3: #52525b;
+      --accent: #6366f1;
+      --accent-glow: rgba(99,102,241,0.3);
+      --green: #22c55e;
+      --green-bg: rgba(34,197,94,0.1);
+      --blue: #3b82f6;
+      --blue-bg: rgba(59,130,246,0.1);
+      --yellow-bg: rgba(234,179,8,0.1);
+      --yellow: #eab308;
     }
 
-    * { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
 
     body {
-      font-family: "Helvetica Neue", -apple-system, BlinkMacSystemFont, "PingFang SC", "Hiragino Sans GB", sans-serif;
+      font-family: 'Inter', -apple-system, sans-serif;
       background: var(--bg);
       color: var(--text);
       min-height: 100vh;
-      line-height: 1.6;
+      -webkit-font-smoothing: antialiased;
     }
 
     /* ── NAV ── */
     nav {
-      position: sticky;
-      top: 0;
+      position: fixed;
+      top: 0; left: 0; right: 0;
       z-index: 100;
-      background: rgba(250,249,247,0.85);
-      backdrop-filter: blur(12px);
-      -webkit-backdrop-filter: blur(12px);
-      border-bottom: 1px solid var(--border);
-      padding: 0 48px;
       height: 56px;
       display: flex;
       align-items: center;
       justify-content: space-between;
+      padding: 0 32px;
+      background: rgba(10,10,11,0.8);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      border-bottom: 1px solid var(--border);
     }
 
-    .nav-logo {
-      font-size: 16px;
+    .nav-brand {
+      font-size: 15px;
       font-weight: 700;
       color: var(--text);
       letter-spacing: -0.3px;
@@ -62,396 +64,425 @@
       gap: 8px;
     }
 
+    .nav-brand span {
+      width: 24px; height: 24px;
+      background: var(--accent);
+      border-radius: 6px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 13px;
+    }
+
     .nav-links {
       display: flex;
-      gap: 28px;
+      gap: 4px;
       list-style: none;
     }
 
     .nav-links a {
-      font-size: 14px;
-      color: var(--text-secondary);
-      text-decoration: none;
+      font-size: 13px;
       font-weight: 500;
-      transition: color 0.15s;
+      color: var(--text-2);
+      text-decoration: none;
+      padding: 6px 12px;
+      border-radius: 6px;
+      transition: all 0.15s;
     }
 
-    .nav-links a:hover { color: var(--text); }
+    .nav-links a:hover {
+      color: var(--text);
+      background: var(--surface-2);
+    }
 
     /* ── HERO ── */
     .hero {
-      max-width: 900px;
+      padding: 128px 32px 80px;
+      max-width: 800px;
       margin: 0 auto;
-      padding: 72px 24px 48px;
-      text-align: center;
     }
 
-    .hero-eyebrow {
-      display: inline-block;
+    .hero-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
       font-size: 12px;
       font-weight: 600;
-      text-transform: uppercase;
-      letter-spacing: 1.2px;
       color: var(--accent);
-      background: var(--accent-light);
+      background: rgba(99,102,241,0.12);
+      border: 1px solid rgba(99,102,241,0.2);
       padding: 4px 12px;
-      border-radius: 20px;
-      margin-bottom: 20px;
+      border-radius: 100px;
+      margin-bottom: 24px;
+      letter-spacing: 0.3px;
+    }
+
+    .hero-badge::before {
+      content: '';
+      width: 6px; height: 6px;
+      background: var(--accent);
+      border-radius: 50%;
+      animation: pulse 2s infinite;
+    }
+
+    @keyframes pulse {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.4; }
     }
 
     .hero h1 {
-      font-size: clamp(36px, 5vw, 56px);
+      font-size: clamp(40px, 6vw, 64px);
       font-weight: 800;
-      letter-spacing: -1.5px;
-      line-height: 1.15;
+      letter-spacing: -2px;
+      line-height: 1.1;
+      margin-bottom: 20px;
       color: var(--text);
-      margin-bottom: 16px;
     }
 
-    .hero h1 span {
-      color: var(--accent);
+    .hero h1 .gradient {
+      background: linear-gradient(135deg, #6366f1 0%, #a855f7 50%, #ec4899 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
     }
 
-    .hero p {
+    .hero-desc {
       font-size: 17px;
-      color: var(--text-secondary);
+      color: var(--text-2);
+      line-height: 1.7;
       max-width: 480px;
-      margin: 0 auto 40px;
+      margin-bottom: 48px;
     }
 
-    .stats-row {
+    /* ── STATS ── */
+    .stats {
       display: flex;
-      justify-content: center;
       gap: 0;
-      background: var(--surface);
       border: 1px solid var(--border);
-      border-radius: var(--radius);
+      border-radius: 12px;
       overflow: hidden;
-      box-shadow: var(--shadow-sm);
-      max-width: 480px;
-      margin: 0 auto;
+      background: var(--surface);
+      max-width: 420px;
     }
 
     .stat {
       flex: 1;
       padding: 20px 24px;
       border-right: 1px solid var(--border);
-      text-align: center;
+      position: relative;
     }
 
     .stat:last-child { border-right: none; }
 
     .stat-num {
-      font-size: 28px;
+      font-size: 32px;
       font-weight: 800;
-      letter-spacing: -0.5px;
+      letter-spacing: -1px;
       color: var(--text);
       line-height: 1;
+      margin-bottom: 4px;
     }
 
     .stat-label {
       font-size: 12px;
-      color: var(--text-muted);
-      margin-top: 4px;
+      color: var(--text-3);
       font-weight: 500;
     }
 
-    /* ── LAYOUT ── */
-    .container {
-      max-width: 900px;
+    /* ── SECTION ── */
+    .section {
+      max-width: 800px;
       margin: 0 auto;
-      padding: 0 24px 80px;
+      padding: 0 32px 64px;
     }
 
-    /* ── SECTION HEADER ── */
-    .section-header {
+    .section-label {
       display: flex;
       align-items: center;
       gap: 12px;
-      margin: 52px 0 24px;
+      margin-bottom: 24px;
     }
 
-    .section-icon {
-      width: 32px;
-      height: 32px;
-      border-radius: 8px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 16px;
+    .section-label h2 {
+      font-size: 13px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      color: var(--text-3);
     }
 
-    .icon-reading { background: var(--reading-bg); }
-    .icon-done { background: var(--done-bg); }
-    .icon-todo { background: #fef9c3; }
-
-    .section-title {
-      font-size: 20px;
-      font-weight: 700;
-      letter-spacing: -0.3px;
+    .section-label::after {
+      content: '';
+      flex: 1;
+      height: 1px;
+      background: var(--border);
     }
 
     .section-count {
-      font-size: 13px;
-      color: var(--text-muted);
-      font-weight: 500;
-      margin-left: auto;
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--text-3);
+      background: var(--surface-2);
+      border: 1px solid var(--border);
+      padding: 2px 8px;
+      border-radius: 100px;
     }
 
-    /* ── CURRENTLY READING (featured) ── */
-    .reading-grid {
+    /* ── READING CARDS (featured) ── */
+    .reading-cards {
       display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(380px, 1fr));
-      gap: 16px;
+      grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
+      gap: 12px;
+      margin-bottom: 64px;
     }
 
     .reading-card {
       background: var(--surface);
-      border-radius: var(--radius);
       border: 1px solid var(--border);
+      border-radius: 12px;
       padding: 20px;
       display: flex;
-      gap: 18px;
-      box-shadow: var(--shadow-sm);
-      transition: box-shadow 0.2s, transform 0.2s;
+      gap: 16px;
       position: relative;
       overflow: hidden;
+      transition: border-color 0.2s, transform 0.2s;
+      cursor: default;
     }
 
     .reading-card::before {
       content: '';
       position: absolute;
-      top: 0; left: 0; right: 0;
-      height: 3px;
-      background: linear-gradient(90deg, var(--reading-color), #60a5fa);
+      inset: 0;
+      background: radial-gradient(600px circle at var(--mx,50%) var(--my,50%), rgba(99,102,241,0.06), transparent 40%);
+      pointer-events: none;
     }
 
     .reading-card:hover {
-      box-shadow: var(--shadow-md);
-      transform: translateY(-2px);
+      border-color: var(--border-hover);
+      transform: translateY(-1px);
     }
 
-    .reading-cover {
+    .reading-card-cover {
       flex-shrink: 0;
-      width: 72px;
-      height: 100px;
+      width: 64px; height: 88px;
       border-radius: 6px;
       overflow: hidden;
-      background: var(--tag-bg);
-      box-shadow: 2px 2px 8px rgba(0,0,0,0.12);
+      background: var(--surface-2);
+      box-shadow: 0 4px 12px rgba(0,0,0,0.4);
     }
 
-    .reading-cover img {
+    .reading-card-cover img {
       width: 100%; height: 100%;
       object-fit: cover;
+      display: block;
     }
 
-    .reading-info { flex: 1; min-width: 0; }
+    .reading-card-body { flex: 1; min-width: 0; }
 
-    .reading-badge {
+    .reading-status {
       display: inline-flex;
       align-items: center;
-      gap: 4px;
+      gap: 5px;
       font-size: 11px;
       font-weight: 600;
-      color: var(--reading-color);
-      background: var(--reading-bg);
+      color: var(--blue);
+      background: var(--blue-bg);
+      border: 1px solid rgba(59,130,246,0.2);
       padding: 2px 8px;
-      border-radius: 20px;
-      margin-bottom: 8px;
+      border-radius: 100px;
+      margin-bottom: 10px;
+    }
+
+    .reading-status::before {
+      content: '';
+      width: 5px; height: 5px;
+      background: var(--blue);
+      border-radius: 50%;
+      animation: pulse 2s infinite;
     }
 
     .reading-title {
-      font-size: 16px;
+      font-size: 15px;
       font-weight: 700;
-      line-height: 1.35;
-      margin-bottom: 4px;
+      line-height: 1.3;
+      margin-bottom: 3px;
+      letter-spacing: -0.2px;
     }
 
     .reading-author {
-      font-size: 13px;
-      color: var(--text-secondary);
-      margin-bottom: 14px;
+      font-size: 12px;
+      color: var(--text-2);
+      margin-bottom: 16px;
     }
 
-    .progress-bar-wrap {
+    .progress-wrap {
       display: flex;
       align-items: center;
       gap: 10px;
     }
 
-    .progress-bar-bg {
+    .progress-track {
       flex: 1;
-      height: 4px;
-      background: var(--border);
-      border-radius: 4px;
+      height: 3px;
+      background: var(--surface-2);
+      border-radius: 100px;
       overflow: hidden;
     }
 
-    .progress-bar-fill {
+    .progress-fill {
       height: 100%;
-      background: linear-gradient(90deg, var(--reading-color), #60a5fa);
-      border-radius: 4px;
-      transition: width 0.6s ease;
+      background: linear-gradient(90deg, var(--accent), #a855f7);
+      border-radius: 100px;
+      transition: width 1s ease;
     }
 
-    .progress-text {
-      font-size: 12px;
-      color: var(--text-secondary);
-      font-weight: 500;
+    .progress-pct {
+      font-size: 11px;
+      font-weight: 600;
+      color: var(--text-3);
       white-space: nowrap;
     }
 
-    /* ── DONE LIST ── */
-    .done-list {
-      display: flex;
-      flex-direction: column;
-      gap: 1px;
-      background: var(--border);
-      border-radius: var(--radius);
+    /* ── DONE TABLE ── */
+    .done-table {
+      border: 1px solid var(--border);
+      border-radius: 12px;
       overflow: hidden;
-      box-shadow: var(--shadow-sm);
+      margin-bottom: 64px;
     }
 
-    .done-card {
-      background: var(--surface);
-      padding: 18px 20px;
-      display: flex;
+    .done-row {
+      display: grid;
+      grid-template-columns: 48px 1fr auto;
       align-items: center;
       gap: 16px;
+      padding: 14px 20px;
+      border-bottom: 1px solid var(--border);
       transition: background 0.15s;
-      cursor: default;
     }
 
-    .done-card:hover { background: #fdfcfb; }
+    .done-row:last-child { border-bottom: none; }
+    .done-row:hover { background: var(--surface); }
 
     .done-cover {
-      flex-shrink: 0;
-      width: 44px;
-      height: 60px;
+      width: 36px; height: 50px;
       border-radius: 4px;
       overflow: hidden;
-      background: var(--tag-bg);
-      box-shadow: 1px 1px 4px rgba(0,0,0,0.1);
+      background: var(--surface-2);
+      flex-shrink: 0;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.3);
     }
 
     .done-cover img { width: 100%; height: 100%; object-fit: cover; }
 
-    .done-info { flex: 1; min-width: 0; }
+    .done-info {}
 
     .done-title {
-      font-size: 15px;
+      font-size: 14px;
       font-weight: 600;
-      line-height: 1.35;
+      letter-spacing: -0.2px;
       white-space: nowrap;
       overflow: hidden;
       text-overflow: ellipsis;
     }
 
-    .done-meta {
+    .done-sub {
       display: flex;
       align-items: center;
       gap: 8px;
-      margin-top: 4px;
-      flex-wrap: wrap;
+      margin-top: 3px;
     }
 
     .done-author {
-      font-size: 13px;
-      color: var(--text-secondary);
+      font-size: 12px;
+      color: var(--text-2);
+    }
+
+    .tag {
+      font-size: 10px;
+      font-weight: 600;
+      color: var(--text-3);
+      background: var(--surface-2);
+      border: 1px solid var(--border);
+      padding: 1px 7px;
+      border-radius: 4px;
+      text-transform: uppercase;
+      letter-spacing: 0.4px;
     }
 
     .done-right {
       display: flex;
       flex-direction: column;
       align-items: flex-end;
-      gap: 6px;
-      flex-shrink: 0;
+      gap: 4px;
     }
 
     .done-check {
-      width: 22px;
-      height: 22px;
+      width: 20px; height: 20px;
       border-radius: 50%;
-      background: var(--done-bg);
-      border: 1.5px solid #86efac;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 11px;
+      background: var(--green-bg);
+      border: 1px solid rgba(34,197,94,0.25);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 10px;
+      color: var(--green);
     }
 
     .done-date {
-      font-size: 12px;
-      color: var(--text-muted);
+      font-size: 11px;
+      color: var(--text-3);
     }
 
-    .done-notes-link {
-      font-size: 12px;
-      color: var(--reading-color);
+    .done-notes {
+      font-size: 11px;
+      color: var(--accent);
       text-decoration: none;
       font-weight: 500;
     }
 
-    .done-notes-link:hover { text-decoration: underline; }
+    .done-notes:hover { text-decoration: underline; }
 
     /* ── TODO GRID ── */
     .todo-grid {
       display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
-      gap: 12px;
+      grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+      gap: 8px;
     }
 
     .todo-card {
       background: var(--surface);
-      border-radius: var(--radius-sm);
       border: 1px solid var(--border);
+      border-radius: 10px;
       padding: 14px;
       display: flex;
       gap: 12px;
       align-items: flex-start;
-      box-shadow: var(--shadow-sm);
-      transition: box-shadow 0.15s, transform 0.15s;
+      transition: border-color 0.15s, transform 0.15s;
     }
 
     .todo-card:hover {
-      box-shadow: var(--shadow-md);
+      border-color: var(--border-hover);
       transform: translateY(-1px);
     }
 
     .todo-cover {
       flex-shrink: 0;
-      width: 40px;
-      height: 56px;
+      width: 36px; height: 50px;
       border-radius: 4px;
       overflow: hidden;
-      background: var(--tag-bg);
+      background: var(--surface-2);
     }
 
     .todo-cover img { width: 100%; height: 100%; object-fit: cover; }
 
     .todo-title {
-      font-size: 13px;
+      font-size: 12px;
       font-weight: 600;
-      line-height: 1.35;
+      line-height: 1.4;
       color: var(--text);
     }
 
     .todo-author {
-      font-size: 12px;
-      color: var(--text-muted);
-      margin-top: 3px;
-    }
-
-    /* ── TAGS ── */
-    .tag {
-      display: inline-block;
       font-size: 11px;
-      font-weight: 500;
-      padding: 2px 8px;
-      border-radius: 4px;
-      background: var(--tag-bg);
-      color: var(--text-secondary);
+      color: var(--text-3);
+      margin-top: 3px;
     }
 
     /* ── COVER PLACEHOLDER ── */
@@ -460,92 +491,98 @@
       display: flex;
       align-items: center;
       justify-content: center;
-      font-size: 9px;
+      font-size: 8px;
       font-weight: 700;
-      color: #fff;
+      color: rgba(255,255,255,0.6);
       text-align: center;
       padding: 4px;
       line-height: 1.3;
-      word-break: break-all;
     }
 
     /* ── FOOTER ── */
     footer {
       border-top: 1px solid var(--border);
-      padding: 28px 48px;
+      padding: 32px;
       text-align: center;
       font-size: 13px;
-      color: var(--text-muted);
+      color: var(--text-3);
+      max-width: 800px;
+      margin: 0 auto;
     }
 
-    @media (max-width: 640px) {
+    /* ── RESPONSIVE ── */
+    @media (max-width: 576px) {
       nav { padding: 0 20px; }
-      .hero { padding: 48px 20px 32px; }
-      .container { padding: 0 20px 60px; }
-      .reading-grid { grid-template-columns: 1fr; }
+      .hero { padding: 96px 20px 48px; }
+      .hero h1 { font-size: 36px; letter-spacing: -1px; }
+      .section { padding: 0 20px 48px; }
+      .reading-cards { grid-template-columns: 1fr; }
       .todo-grid { grid-template-columns: repeat(2, 1fr); }
+      .stats { max-width: 100%; }
+      .done-row { grid-template-columns: 36px 1fr auto; padding: 12px 16px; }
       footer { padding: 24px 20px; }
     }
   </style>
 </head>
 <body>
 
+<!-- NAV -->
 <nav>
-  <div class="nav-logo">📚 Books &amp; Thoughts</div>
+  <div class="nav-brand">
+    <span>📚</span>
+    Books &amp; Thoughts
+  </div>
   <ul class="nav-links">
     <li><a href="#reading">在读</a></li>
     <li><a href="#done">已读</a></li>
-    <li><a href="#todo">书单</a></li>
+    <li><a href="#list">书单</a></li>
   </ul>
 </nav>
 
+<!-- HERO -->
 <div class="hero">
-  <div class="hero-eyebrow">Reading Journal</div>
-  <h1>书籍与<span>思考</span></h1>
-  <p>和 Claude 一起读书，记录每一本书带来的思考与对话</p>
-  <div class="stats-row" id="stats-row"></div>
+  <div class="hero-badge">Reading Journal 2026</div>
+  <h1>书籍与<br><span class="gradient">思考</span></h1>
+  <p class="hero-desc">和 Claude 一起读书，记录每一本书带来的灵感与对话。</p>
+  <div class="stats" id="stats"></div>
 </div>
 
-<div class="container">
-
-  <!-- 在读中 -->
-  <div class="section-header" id="reading">
-    <div class="section-icon icon-reading">📖</div>
-    <h2 class="section-title">正在读</h2>
+<!-- READING -->
+<div class="section" id="reading">
+  <div class="section-label">
+    <h2>正在读</h2>
     <span class="section-count" id="count-reading"></span>
   </div>
-  <div class="reading-grid" id="books-reading"></div>
+  <div class="reading-cards" id="books-reading"></div>
+</div>
 
-  <!-- 已读完 -->
-  <div class="section-header" id="done">
-    <div class="section-icon icon-done">✅</div>
-    <h2 class="section-title">已读完</h2>
+<!-- DONE -->
+<div class="section" id="done">
+  <div class="section-label">
+    <h2>已读完</h2>
     <span class="section-count" id="count-done"></span>
   </div>
-  <div class="done-list" id="books-done"></div>
+  <div class="done-table" id="books-done"></div>
+</div>
 
-  <!-- 待读书单 -->
-  <div class="section-header" id="todo">
-    <div class="section-icon icon-todo">🔖</div>
-    <h2 class="section-title">书单</h2>
+<!-- TODO -->
+<div class="section" id="list">
+  <div class="section-label">
+    <h2>书单</h2>
     <span class="section-count" id="count-todo"></span>
   </div>
   <div class="todo-grid" id="books-todo"></div>
-
 </div>
 
-<footer>
-  用心读书 · 用文字留存思考 · <span id="year"></span>
-</footer>
+<footer>用心读书 · 用文字留存思考 · <span id="yr"></span></footer>
 
 <script>
-  document.getElementById('year').textContent = new Date().getFullYear();
+  document.getElementById('yr').textContent = new Date().getFullYear();
 
-  const COLORS = ['#4f7cac','#c17767','#7c9e6e','#9b7cb6','#c49a3c','#6aabb8','#b06a8a','#7a8fa6'];
-
-  function colorFor(title) {
+  const COLORS = ['#4f46e5','#7c3aed','#0891b2','#059669','#d97706','#dc2626','#db2777','#2563eb'];
+  function colorFor(t) {
     let h = 0;
-    for (let c of title) h = (h * 31 + c.charCodeAt(0)) & 0xffffffff;
+    for (let c of t) h = (h * 31 + c.charCodeAt(0)) & 0xffffffff;
     return COLORS[Math.abs(h) % COLORS.length];
   }
 
@@ -554,19 +591,15 @@
     return `https://books.google.com/books/content?vid=ISBN${isbn}&printsec=frontcover&img=1&zoom=1`;
   }
 
-  function makeCoverImg(book, w, h) {
+  function makeCover(book, w, h) {
     const url = coverUrl(book.isbn);
     const bg = colorFor(book.title);
-    if (!url) {
-      return `<div class="cover-placeholder" style="background:${bg}">${book.title}</div>`;
-    }
+    if (!url) return `<div class="cover-placeholder" style="background:${bg}">${book.title}</div>`;
     return `<img src="${url}" alt="${book.title}" loading="lazy" onerror="this.parentNode.innerHTML='<div class=\\'cover-placeholder\\' style=\\'background:${bg}\\'>${book.title}</div>'">`;
   }
 
-  const categoryLabel = c => ({
-    tech:'技术', business:'商业', psychology:'心理', science:'科学',
-    'self-improvement':'自我提升', philosophy:'哲学', history:'历史', fiction:'小说'
-  }[c] || c);
+  const catMap = { tech:'技术', business:'商业', psychology:'心理', science:'科学', 'self-improvement':'成长', philosophy:'哲学', history:'历史', fiction:'文学' };
+  const catLabel = c => catMap[c] || c;
 
   const books = {
     reading: [
@@ -575,17 +608,17 @@
     ],
     done: [
       { title: '改变心理学的40项研究', author: '罗杰·R·霍克', category: 'psychology', isbn: '9780205416127', finishedAt: '2026-03' },
+      { title: "Don't Make Me Think", author: 'Steve Krug', category: 'tech', isbn: '9780321965516', finishedAt: '2026-03-16', notes: 'tech/dont-make-me-think/notes.md' },
+      { title: '为什么', author: '朱迪亚·珀尔', category: 'science', isbn: '9780465097609', finishedAt: '2026-03-14', notes: 'science/the-book-of-why/notes.md' },
       { title: '真体验', author: '', category: 'psychology', isbn: null, finishedAt: '2026-02' },
-      { title: '你变了，世界就变了', author: '卡耐基', category: 'self-improvement', isbn: null, finishedAt: '2026-02' },
+      { title: '你变了，世界就变了', author: '卡耐基', category: 'self-improvement', isbn: '9787511337306', finishedAt: '2026-02' },
       { title: '洛克菲勒留给儿子的38封信', author: '约翰·D·洛克菲勒', category: 'self-improvement', isbn: null, finishedAt: '2026-02' },
       { title: '用户体验定律', author: '乔恩·亚布隆斯基', category: 'tech', isbn: '9781492055310', finishedAt: '2026-02' },
       { title: '这才是心理学（第11版）', author: '基思·斯坦诺维奇', category: 'psychology', isbn: '9780205914128', finishedAt: '2026-02' },
       { title: '老人与海', author: '海明威', category: 'fiction', isbn: '9780684801223', finishedAt: '2026-01' },
-      { title: '学会提问，驾驭AI：提示词从入门到精通', author: '程希冀', category: 'tech', isbn: null, finishedAt: '2026-01' },
+      { title: '学会提问，驾驭AI', author: '程希冀', category: 'tech', isbn: null, finishedAt: '2026-01' },
       { title: '通用人工智能', author: '刘嘉', category: 'tech', isbn: null, finishedAt: '2026-01' },
       { title: '小王子（全彩英文版）', author: '圣埃克苏佩里', category: 'fiction', isbn: '9780547978048', finishedAt: '2026-01' },
-      { title: "Don't Make Me Think", author: 'Steve Krug', category: 'tech', isbn: '9780321965516', finishedAt: '2026-03-16', notes: 'tech/dont-make-me-think/notes.md' },
-      { title: '为什么', author: '朱迪亚·珀尔', category: 'science', isbn: '9780465097609', finishedAt: '2026-03-14', notes: 'science/the-book-of-why/notes.md' },
     ],
     todo: [
       { title: '认知觉醒', author: '周岭', category: 'self-improvement', isbn: null },
@@ -595,45 +628,43 @@
     ],
   };
 
-  /* stats */
-  const total = books.done.length + books.reading.length;
-  document.getElementById('stats-row').innerHTML = `
-    <div class="stat"><div class="stat-num">${books.reading.length}</div><div class="stat-label">正在读</div></div>
+  // Stats
+  document.getElementById('stats').innerHTML = `
+    <div class="stat"><div class="stat-num">${books.reading.length}</div><div class="stat-label">在读中</div></div>
     <div class="stat"><div class="stat-num">${books.done.length}</div><div class="stat-label">已读完</div></div>
-    <div class="stat"><div class="stat-num">${books.todo.length}</div><div class="stat-label">书单待读</div></div>
+    <div class="stat"><div class="stat-num">${books.todo.length}</div><div class="stat-label">待读书单</div></div>
   `;
 
-  /* section counts */
-  document.getElementById('count-reading').textContent = `${books.reading.length} 本`;
-  document.getElementById('count-done').textContent = `${books.done.length} 本`;
-  document.getElementById('count-todo').textContent = `${books.todo.length} 本`;
+  document.getElementById('count-reading').textContent = books.reading.length;
+  document.getElementById('count-done').textContent = books.done.length;
+  document.getElementById('count-todo').textContent = books.todo.length;
 
-  /* reading cards */
+  // Reading
   document.getElementById('books-reading').innerHTML = books.reading.map(b => `
     <div class="reading-card">
-      <div class="reading-cover">${makeCoverImg(b, 72, 100)}</div>
-      <div class="reading-info">
-        <div class="reading-badge">● 正在读</div>
+      <div class="reading-card-cover">${makeCover(b)}</div>
+      <div class="reading-card-body">
+        <div class="reading-status">正在读</div>
         <div class="reading-title">${b.title}</div>
-        <div class="reading-author">${b.author} · <span class="tag">${categoryLabel(b.category)}</span></div>
-        <div class="progress-bar-wrap">
-          <div class="progress-bar-bg"><div class="progress-bar-fill" style="width:${b.progress}%"></div></div>
-          <span class="progress-text">${b.progress > 0 ? b.progress + '%' : '未开始'}</span>
+        <div class="reading-author">${b.author}</div>
+        <div class="progress-wrap">
+          <div class="progress-track"><div class="progress-fill" style="width:${b.progress}%"></div></div>
+          <span class="progress-pct">${b.progress > 0 ? b.progress + '%' : '未开始'}</span>
         </div>
       </div>
     </div>
   `).join('');
 
-  /* done list */
+  // Done
   document.getElementById('books-done').innerHTML = books.done.map(b => `
-    <div class="done-card">
-      <div class="done-cover">${makeCoverImg(b, 44, 60)}</div>
+    <div class="done-row">
+      <div class="done-cover">${makeCover(b)}</div>
       <div class="done-info">
         <div class="done-title">${b.title}</div>
-        <div class="done-meta">
+        <div class="done-sub">
           <span class="done-author">${b.author}</span>
-          <span class="tag">${categoryLabel(b.category)}</span>
-          ${b.notes ? `<a class="done-notes-link" href="${b.notes}">📝 笔记</a>` : ''}
+          <span class="tag">${catLabel(b.category)}</span>
+          ${b.notes ? `<a class="done-notes" href="${b.notes}">📝 笔记</a>` : ''}
         </div>
       </div>
       <div class="done-right">
@@ -643,16 +674,25 @@
     </div>
   `).join('');
 
-  /* todo grid */
+  // Todo
   document.getElementById('books-todo').innerHTML = books.todo.map(b => `
     <div class="todo-card">
-      <div class="todo-cover">${makeCoverImg(b, 40, 56)}</div>
+      <div class="todo-cover">${makeCover(b)}</div>
       <div>
         <div class="todo-title">${b.title}</div>
         <div class="todo-author">${b.author}</div>
       </div>
     </div>
   `).join('');
+
+  // Card glow effect
+  document.querySelectorAll('.reading-card').forEach(card => {
+    card.addEventListener('mousemove', e => {
+      const r = card.getBoundingClientRect();
+      card.style.setProperty('--mx', ((e.clientX - r.left) / r.width * 100) + '%');
+      card.style.setProperty('--my', ((e.clientY - r.top) / r.height * 100) + '%');
+    });
+  });
 </script>
 
 </body>
