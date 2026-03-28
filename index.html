@@ -672,14 +672,17 @@
 
     // load cover images
     async function loadImg(url) {
-      // 用 weserv.nl 代理绕过 CORS 限制，让 Canvas 能画上封面
-      const proxied = `https://images.weserv.nl/?url=${encodeURIComponent(url)}&w=200&h=280&fit=cover`;
+      // 本地相对路径直接加载（同源，无需代理）；远程 URL 用 weserv.nl 代理绕过 CORS 限制
+      const isRemote = url.startsWith('http://') || url.startsWith('https://');
+      const src = isRemote
+        ? `https://images.weserv.nl/?url=${encodeURIComponent(url)}&w=200&h=280&fit=cover`
+        : url;
       return new Promise(res => {
         const img = new Image();
-        img.crossOrigin = 'anonymous';
+        if (isRemote) img.crossOrigin = 'anonymous';
         img.onload = () => res(img);
         img.onerror = () => res(null);
-        img.src = proxied;
+        img.src = src;
       });
     }
 
